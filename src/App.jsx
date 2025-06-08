@@ -14,10 +14,10 @@ const PLAYERS = {
 const INITIAL_GAME_BOARD = [
   [null, null, null],
   [null, null, null],
-  [null, null, null],
+  [null, null, null],  
 ]
 
-function deriveActivePlayer(gameTurns) {
+function getActivePlayer(gameTurns) {
   let currentPlayer = "X";
   if (gameTurns.length > 0 && gameTurns[0].player === "X") {
     currentPlayer = "O";
@@ -25,8 +25,8 @@ function deriveActivePlayer(gameTurns) {
   return currentPlayer;
 }
 
-function deriveGameBoard(gameTurns) {
-  
+function getUpdatedGameBoard(gameTurns) {
+
   let gameBoard = [...INITIAL_GAME_BOARD.map((array) => [...array])];
 
   for (const turn of gameTurns) {
@@ -37,10 +37,10 @@ function deriveGameBoard(gameTurns) {
   return gameBoard;
 }
 
-function deriveWinner(gameBoard, player) {
+function checkWinner(gameBoard, player) {
   let winner;
 
-  for(const combination of WINNING_COMBINATIONS){
+  for (const combination of WINNING_COMBINATIONS) {
     const firstSquareSymbol = gameBoard[combination[0].row][combination[0].column];
     const secondSquareSymbol = gameBoard[combination[1].row][combination[1].column];
     const thirdquareSymbol = gameBoard[combination[2].row][combination[2].column];
@@ -48,7 +48,7 @@ function deriveWinner(gameBoard, player) {
     if (firstSquareSymbol && firstSquareSymbol === secondSquareSymbol && firstSquareSymbol === thirdquareSymbol) {
       winner = player[firstSquareSymbol];
     }
-  }  
+  }
   return winner
 }
 
@@ -57,14 +57,14 @@ function App() {
   const [players, setPlayer] = useState(PLAYERS);
   const [gameTurns, setGameTurns] = useState([]);
 
-  const activePlayer = deriveActivePlayer(gameTurns);
-  const gameBoard = deriveGameBoard(gameTurns);
-  const winner = deriveWinner(gameBoard, players);
+  const activePlayer = getActivePlayer(gameTurns);
+  const gameBoard = getUpdatedGameBoard(gameTurns);
+  const winner = checkWinner(gameBoard, players);
   const hasDraw = gameTurns.length === 9 && !winner;
 
   function handleSelectSquare(rowIndex, colIndex) {
     setGameTurns((prevTurns) => {
-      const currentPlayer = deriveActivePlayer(prevTurns);
+      const currentPlayer = getActivePlayer(prevTurns);
 
       const updateTurns = [
         { square: { row: rowIndex, col: colIndex }, player: currentPlayer },
@@ -72,10 +72,8 @@ function App() {
       ];
 
       return updateTurns;
-
     });
   }
-
 
   function handleRestart() {
     setGameTurns([]);
